@@ -1,4 +1,4 @@
-
+require "avocado"
 
 module Models
 
@@ -36,7 +36,10 @@ module Models
     property change : Bool = false
   end
 
+  @[AvocadoModel(opcode: 111)]
   struct Character
+    include Avocado::Pack
+
     property flag : UInt8 = 0
     property name : String = ""
     property job : String = ""

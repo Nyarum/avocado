@@ -9,7 +9,7 @@ end
 
 PacketInputs = [] of PacketIn.class
 
-class PacketIn < Avocado::Unpack
+class PacketIn
   class_getter opcode : Int16 = 0
 
   macro inherited
@@ -85,7 +85,6 @@ module Packets
     end
   end
 
-  @[AvocadoModel(opcode: 111)]
   class Test < PacketIn
     data = Models::Character.new
 
@@ -103,7 +102,6 @@ module Packets
     end
   end
 
-  @[AvocadoModel(opcode: 431)]
   class Auth < PacketIn
     @@credentials : Models::Credentials = Models::Credentials.new
     class_getter opcode : Int16 = 431
