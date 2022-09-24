@@ -46,7 +46,7 @@ module Models
     property level : UInt16 = 0
     property ver : UInt16 = 0
     property type_id : UInt16 = 0
-    property items = Array(Item).new(0) # 10
+    property items : Array(Item) = Array(Item).new(0) # 10
     property hair : UInt16 = 0
   end
 

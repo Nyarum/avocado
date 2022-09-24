@@ -85,20 +85,19 @@ module Packets
     end
   end
 
-  class Test < PacketIn
-    data = Models::Character.new
+  class Test < PacketOut
+    @data = Models::Character.new
 
-    def parse
-      puts {{ @type.instance_vars.map }}
-      self.do
+    def opcode
+      @data.opcode
     end
 
-    def self.parse(data : Bytes)
-      
-    end
+    def result
+      @data.items << Models::Item.new
+      @data.pack
 
-    def self.next()
-      "Test Packet"
+      io = IO::Memory.new(1024)
+      io.to_s
     end
   end
 

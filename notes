@@ -1,0 +1,18 @@
+{{ @type.instance_vars }}.each do |x|
+        case x
+        when Array(T)
+          puts "array"
+
+          x.each do |t|
+            puts t
+            puts typeof(t)
+          end
+
+        when String
+          puts "string"
+        when UInt16
+          puts "uint16"
+        when UInt8
+          puts "uint8"
+        end
+      end

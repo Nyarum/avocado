@@ -30,7 +30,8 @@ def handle_client(client)
 end
 
 test_packet = Packets::Test
-test_packet.new.parse
+puts test_packet.new.opcode
+puts test_packet.new.result
 
 server = TCPServer.new("0.0.0.0", 1973)
 
