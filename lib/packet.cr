@@ -13,7 +13,7 @@ class PacketIn
   class_getter opcode : Int16 = 0
 
   macro inherited
-    PacketInputs << {{@type}}
+    PacketInputs << {{ @type }}
   end
 
   def self.parse(data : Bytes)
@@ -72,6 +72,22 @@ module Packets
       @data.characters = [char]
       @data.pack(io)
       io.to_s
+    end
+  end
+
+  class AuthTest
+    @data : Models::CredentialsTest = Models::CredentialsTest.new
+    
+    def opcode
+      @data.opcode
+    end
+
+    def parse(data : Bytes)
+      io = IO::Memory.new(data)
+      @data.unpack(io)
+    end
+    
+    def self.next()
     end
   end
 

@@ -36,8 +36,8 @@ first_time_packet = PacketBuilder.new.build(Packets::FirstTime.new)
 #test = Models::Test
 #puts test
 
-auth_characters_packet = PacketBuilder.new.build(Packets::AuthCharacters.new)
-puts auth_characters_packet.to_slice.to_unsafe_bytes.hexdump
+auth_test = Packets::AuthTest.new
+auth_test.parse(Bytes[0x03, 0xa3, 0x03, 0xa3])
 
 puts "Running server"
 while client = server.accept?

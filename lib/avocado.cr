@@ -9,7 +9,12 @@ module Avocado
 
   def []=(variable, value)
     {% for ivar in @type.instance_vars %}
-      if {{ivar.id.symbolize}} == variable
+      puts "test"
+      puts {{ivar.id.symbolize}}
+      puts variable
+      if {{ivar.id.symbolize}}.to_s == variable.to_s.[1..]
+        puts "work"
+        puts value.is_a?({{ ivar.type.id }})
         if value.is_a?({{ ivar.type.id }})
           @{{ivar}} = value
         else
@@ -72,22 +77,46 @@ module Avocado
     
     include Avocado
 
-    def unpack(io, type)
+    def unpack(io, type, variable)
       case v = type
-      when UInt8, UInt16, UInt32, UInt64
-        IO::ByteFormat::BigEndian.decode(typeof(v), io)
+      when UInt8
+        buf = Bytes.new(1)
+        io.read(buf)
+        self[":" + variable] = IO::ByteFormat::BigEndian.decode(typeof(v), buf)
+      when UInt16
+        buf = Bytes.new(2)
+        io.read(buf)
+        self[":" + variable] = IO::ByteFormat::BigEndian.decode(typeof(v), buf)
+      when UInt32
+        buf = Bytes.new(4)
+        io.read(buf)
+        self[":" + variable] = IO::ByteFormat::BigEndian.decode(typeof(v), buf)
+      when UInt64
+        buf = Bytes.new(8)
+        io.read(buf)
+        self[":" + variable] = IO::ByteFormat::BigEndian.decode(typeof(v), buf)
       when Bytes
-        io.write_bytes(v.size.to_i16, IO::ByteFormat::BigEndian)
-        io << String.new(v)
+        buf = Bytes.new(2)
+        io.read(buf)
+        len = IO::ByteFormat::BigEndian.decode(typeof(v), buf)
+
+        buf = Bytes.new(len)
+        io.read(buf)
+        self[":" + variable] = buf
       when String
-        io.write_bytes(v.size.to_i16, IO::ByteFormat::BigEndian)
-        io << v
+        buf = Bytes.new(2)
+        io.read(buf)
+        len = IO::ByteFormat::BigEndian.decode(typeof(v), buf)
+
+        buf = Bytes.new(len)
+        io.read(buf)
+        self[":" + variable] = String.new(buf)
       when Array
         v.each do |x|
           if x.is_a?(Struct)
             x.pack(io)
           else
-            pack(io, x)
+            pack(io, x, variable)
           end
         end
       end
@@ -99,8 +128,12 @@ module Avocado
           next
         end
 
-        pack(io, self[":" + x])
+        unpack(io, self[":" + x], x)
       }
+    end
+
+    def opcode
+      {{ @type.annotation(AvocadoModel)[:opcode] }}.to_u16
     end
 
   end

@@ -9,6 +9,7 @@ module Models
     property time : String = ""
   end
   
+  @[AvocadoModel(opcode: 431)]
   struct Credentials
     property key : String = ""
     property login : String = ""
@@ -16,6 +17,14 @@ module Models
     property mac : String = ""
     property is_cheat : Int16 = 0
     property client_version : Int16 = 0
+  end
+
+  @[AvocadoModel(opcode: 431)]
+  struct CredentialsTest
+    include Avocado::Unpack
+
+    property is_cheat : UInt16 = 0
+    property client_version : UInt16 = 0
   end
 
   struct InstAttribute
