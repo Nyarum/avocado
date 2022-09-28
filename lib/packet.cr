@@ -7,20 +7,24 @@ abstract class PacketOut
   abstract def result
 end
 
-PacketInputs = [] of PacketIn.class
+PacketInputs = {} of UInt16 => PacketIn # need to clone it to avoid data races
 
 class PacketIn
-  class_getter opcode : Int16 = 0
-
   macro inherited
-    PacketInputs << {{ @type }}
+    handler = {{ @type.name }}.new
+    PacketInputs[handler.opcode] = handler
   end
 
-  def self.parse(data : Bytes)
+  def opcode
+    0.to_u16
+  end
+
+  def parse(data : Bytes)
     puts "base implement"
+    self
   end
 
-  def self.next()
+  def next()
     "base implement"
   end
 end
@@ -75,7 +79,7 @@ module Packets
     end
   end
 
-  class AuthTest
+  class AuthTest < PacketIn
     @data : Models::CredentialsTest = Models::CredentialsTest.new
     
     def opcode
@@ -85,6 +89,7 @@ module Packets
     def parse(data : Bytes)
       io = IO::Memory.new(data)
       @data.unpack(io)
+      self
     end
     
     def self.next()
@@ -92,35 +97,19 @@ module Packets
   end
 
   class Auth < PacketIn
-    @@credentials : Models::Credentials = Models::Credentials.new
-    class_getter opcode : Int16 = 431
+    @data : Models::Credentials = Models::Credentials.new
+    
+    def opcode
+      @data.opcode
+    end
 
-    def self.parse(data : Bytes)
-      len_key = IO::ByteFormat::BigEndian.decode(Int16, data[..1]) + 1
-      @@credentials.key = String.new(data[2..len_key])
-      data = data[len_key+1..]
-
-      len_login = IO::ByteFormat::BigEndian.decode(Int16, data[..1]) + 1
-      @@credentials.login = String.new(data[2..len_login])
-      data = data[len_login+1..]
-
-      len_password = IO::ByteFormat::BigEndian.decode(Int16, data[..1]) + 1
-      @@credentials.password = String.new(data[2..len_password])
-      data = data[len_password+1..]
-
-      len_mac = IO::ByteFormat::BigEndian.decode(Int16, data[..1]) + 1
-      @@credentials.mac = String.new(data[2..len_mac])
-      data = data[len_mac+1..]
-
-      @@credentials.is_cheat = IO::ByteFormat::BigEndian.decode(Int16, data[..1])
-      data = data[2..]
-
-      @@credentials.client_version = IO::ByteFormat::BigEndian.decode(Int16, data[..1])
-
-      puts @@credentials
+    def parse(data : Bytes)
+      io = IO::Memory.new(data)
+      @data.unpack(io)
+      self
     end
     
-    def self.next()
+    def next()
       auth_characters_packet = PacketBuilder.new.build(Packets::AuthCharacters.new)
       auth_characters_packet
     end
@@ -160,16 +149,9 @@ class PacketParser
     end
 
     id = IO::ByteFormat::LittleEndian.decode(Int32, data[2..5])
-    opcode = IO::ByteFormat::BigEndian.decode(Int16, data[6..7])
+    opcode = IO::ByteFormat::BigEndian.decode(UInt16, data[6..7])
 
-    PacketInputs.each do |elem|
-      if opcode == elem.opcode
-        elem.parse(data[8..])
-
-        puts elem.next().to_slice
-        @buffer << elem.next()
-      end
-    end
+    @buffer << PacketInputs[opcode].parse(data[8..]).next()
   end
 
   def next()

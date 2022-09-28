@@ -3,7 +3,7 @@ require "./avocado"
 module Models
 
   @[AvocadoModel(opcode: 940)]
-  class FirstTime
+  struct FirstTime
     include Avocado::Pack
 
     property time : String = ""
@@ -11,6 +11,8 @@ module Models
   
   @[AvocadoModel(opcode: 431)]
   struct Credentials
+    include Avocado::Unpack
+
     property key : String = ""
     property login : String = ""
     property password : String = ""
@@ -39,13 +41,13 @@ module Models
 
     property id : UInt16 = 0
     property num : UInt16 = 0
-    property endure : Array(UInt16) = Array(UInt16).new(0) # 2
-    property energy : Array(UInt16) = Array(UInt16).new(0) # 2
+    property endure : Array(UInt16) = Array(UInt16).new(2) # 2
+    property energy : Array(UInt16) = Array(UInt16).new(2) # 2
     property forge_lv : UInt8 = 0
     property pass_value : UInt8 = 0
-    property db_param : Array(UInt16) = Array(UInt16).new(0) # 2
-    property inst_attrs : Array(InstAttribute) = Array(InstAttribute).new(0) # 5
-    property item_attrs : Array(UInt16) = Array(UInt16).new(0) # 58
+    property db_param : Array(UInt16) = Array(UInt16).new(2) # 2
+    property inst_attrs : Array(InstAttribute) = Array(InstAttribute).new(5) # 5
+    property item_attrs : Array(UInt16) = Array(UInt16).new(58) # 58
     property init_flag : UInt8 = 0
     property pass_value2 : UInt8 = 0
     property valid : Bool = false
@@ -61,7 +63,7 @@ module Models
     property level : UInt16 = 0
     property ver : UInt16 = 0
     property type_id : UInt16 = 0
-    property items : Array(Item) = Array(Item).new(0) # 10
+    property items : Array(Item) = Array(Item).new(10) # 10
     property hair : UInt16 = 0
   end
 

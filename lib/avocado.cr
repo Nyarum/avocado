@@ -9,12 +9,7 @@ module Avocado
 
   def []=(variable, value)
     {% for ivar in @type.instance_vars %}
-      puts "test"
-      puts {{ivar.id.symbolize}}
-      puts variable
       if {{ivar.id.symbolize}}.to_s == variable.to_s.[1..]
-        puts "work"
-        puts value.is_a?({{ ivar.type.id }})
         if value.is_a?({{ ivar.type.id }})
           @{{ivar}} = value
         else
@@ -98,7 +93,7 @@ module Avocado
       when Bytes
         buf = Bytes.new(2)
         io.read(buf)
-        len = IO::ByteFormat::BigEndian.decode(typeof(v), buf)
+        len = IO::ByteFormat::BigEndian.decode(UInt16, buf)
 
         buf = Bytes.new(len)
         io.read(buf)
@@ -106,7 +101,7 @@ module Avocado
       when String
         buf = Bytes.new(2)
         io.read(buf)
-        len = IO::ByteFormat::BigEndian.decode(typeof(v), buf)
+        len = IO::ByteFormat::BigEndian.decode(UInt16, buf)
 
         buf = Bytes.new(len)
         io.read(buf)
