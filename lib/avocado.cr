@@ -2,22 +2,53 @@
 annotation AvocadoModel
 end
 
+annotation AvocadoItem
+end
+
 module Avocado
 
   module Pack
 
-    #self.{{ type }}
+    @io = IO::Memory.new(1024)
 
-    #types = {{ @type.instance_vars.map &.name.stringify }}
+    macro field(type, subType = 0)
+      
+      @{{ type.var }} : {{ type.type }} = {{ type.value }}
 
-    def pack
-      vars = [] of String
+      def {{ type.var }}= (v)
+        @{{ type.var }} = v
+      end
 
-      {% for name, index in @type.instance_vars %}
-        vars << typeof(self.{{ name }}).to_s
-      {% end %}
+      def pack_{{ type.var }}
+        {% if type.type.resolve == UInt8 ||
+          type.type.resolve == UInt16 || 
+          type.type.resolve == UInt32 ||
+          type.type.resolve == UInt64 %}
+          @io.write_bytes(@{{ type.var }}, IO::ByteFormat::BigEndian)
+        {% end %}
 
-      puts vars
+        {% if type.type.resolve == String %}
+          @io.write_bytes(@{{ type.var }}.size.to_i16, IO::ByteFormat::BigEndian)
+          @io << @{{ type.var }}
+        {% end %}
+
+        {% if type.type.resolve == Bytes %}
+          @io.write_bytes(@{{ type.var }}.size.to_i16, IO::ByteFormat::BigEndian)
+          @io << String.new(@{{ type.var }})
+        {% end %}
+      
+        puts {{ type.type == Array }}
+        {% if !type.type.resolve.annotation(AvocadoItem).nil? %}
+          puts {{ type.type.resolve.annotation(AvocadoItem)[:type] }}
+        {% end %}
+
+        puts {{ type.type }}.class
+
+        {% if type.type.resolve >= Array.resolve %}
+          puts "test"
+        {% end %}
+      end
+       
     end
 
     def opcode

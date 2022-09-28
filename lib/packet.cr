@@ -27,18 +27,16 @@ end
 
 module Packets
   class FirstTime < PacketOut
-    getter opcode : Int16
-
-    def initialize()
-      @opcode = 940
-    end
+    @data = Models::FirstTime.new
 
     def opcode
-      @opcode
+      @data.opcode
     end
 
     def result
-      Time.utc.to_s("[%m-%d %H:%M:%S:%L]")
+      @data.time = Time.utc.to_s("[%m-%d %H:%M:%S:%L]")
+      @data.pack_time
+      @data.@io.to_s
     end
   end
 
@@ -59,45 +57,21 @@ module Packets
   end
 
   class AuthCharacters < PacketOut
-    getter opcode : Int16
-    auth : Models::Auth
-
-    def initialize(auth : Models::Auth)
-      @opcode = 931
-      @auth = auth
-    end
-
-    def opcode
-      @opcode
-    end
-
-    def result
-      io = IO::Memory.new(1024)
-      io.write_bytes(@auth.error_code, IO::ByteFormat::BigEndian)
-      io.write_bytes(@auth.key.size.to_i16, IO::ByteFormat::BigEndian)
-      io << String.new(@auth.key)
-      io.write_bytes(@auth.characters.size.to_i8, IO::ByteFormat::BigEndian)
-      io.write_bytes(@auth.pincode, IO::ByteFormat::BigEndian)
-      io.write_bytes(@auth.encryption, IO::ByteFormat::BigEndian)
-      io.write_bytes(@auth.dw_flag, IO::ByteFormat::BigEndian)
-
-      io.to_s
-    end
-  end
-
-  class Test < PacketOut
-    @data = Models::Character.new
+    @data = Models::Auth.new
 
     def opcode
       @data.opcode
     end
 
     def result
-      @data.items << Models::Item.new
-      @data.pack
+      @data.pack_error_code
+      @data.pack_key
+      @data.pack_characters
+      @data.pack_pincode
+      @data.pack_encryption
+      @data.pack_dw_flag
 
-      io = IO::Memory.new(1024)
-      io.to_s
+      @data.@io.to_s
     end
   end
 
@@ -131,7 +105,7 @@ module Packets
     end
     
     def self.next()
-      auth_characters_packet = PacketBuilder.new.build(Packets::AuthCharacters.new(Models::Auth.new))
+      auth_characters_packet = PacketBuilder.new.build(Packets::AuthCharacters.new)
       auth_characters_packet
     end
   end

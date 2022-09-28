@@ -29,13 +29,12 @@ def handle_client(client)
 
 end
 
-test_packet = Packets::Test
-puts test_packet.new.opcode
-puts test_packet.new.result
-
 server = TCPServer.new("0.0.0.0", 1973)
 
 first_time_packet = PacketBuilder.new.build(Packets::FirstTime.new)
+
+auth_characters_packet = PacketBuilder.new.build(Packets::AuthCharacters.new)
+puts auth_characters_packet.to_slice.to_unsafe_bytes.hexdump
 
 puts "Running server"
 while client = server.accept?
