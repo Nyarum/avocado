@@ -1,4 +1,4 @@
-require "avocado"
+require "./avocado"
 
 module Models
 
@@ -6,7 +6,7 @@ module Models
   class FirstTime
     include Avocado::Pack
 
-    field time : String = ""
+    property time : String = ""
   end
   
   struct Credentials
@@ -19,11 +19,15 @@ module Models
   end
 
   struct InstAttribute
+    include Avocado::Pack
+
     property id : UInt16 = 0
     property value : UInt16 = 0
   end
 
   struct Item
+    include Avocado::Pack
+
     property id : UInt16 = 0
     property num : UInt16 = 0
     property endure : Array(UInt16) = Array(UInt16).new(0) # 2
@@ -42,25 +46,25 @@ module Models
   struct Character
     include Avocado::Pack
 
-    field flag : UInt8 = 0
-    field name : String = ""
-    field job : String = ""
-    field level : UInt16 = 0
-    field ver : UInt16 = 0
-    field type_id : UInt16 = 0
-    field items : Array(Item) = Array(Item).new(0) # 10
-    field hair : UInt16 = 0
+    property flag : UInt8 = 0
+    property name : String = ""
+    property job : String = ""
+    property level : UInt16 = 0
+    property ver : UInt16 = 0
+    property type_id : UInt16 = 0
+    property items : Array(Item) = Array(Item).new(0) # 10
+    property hair : UInt16 = 0
   end
 
   @[AvocadoModel(opcode: 931)]
   struct Auth
     include Avocado::Pack
 
-    field error_code : UInt16 = 0
-    field key : Bytes = Bytes[0x7C, 0x35, 0x09, 0x19, 0xB2, 0x50, 0xD3, 0x49]
-    field characters : Array(Character) = Array(Character).new(0), Character
-    field pincode : UInt8 = 0
-    field encryption : UInt32 = 0
-    field dw_flag : UInt32 = 12820
+    property error_code : UInt16 = 0
+    property key : Bytes = Bytes[0x7C, 0x35, 0x09, 0x19, 0xB2, 0x50, 0xD3, 0x49]
+    property characters : Array(Character) = Array(Character).new(0)
+    property pincode : UInt8 = 0
+    property encryption : UInt32 = 0
+    property dw_flag : UInt32 = 12820
   end
 end

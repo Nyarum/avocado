@@ -1,7 +1,7 @@
 require "socket"
 require "packet"
-require "models"
-require "avocado"
+require "../lib/models"
+require "../lib/avocado"
 
 def handle_client(client)
   puts "wait new packet"
@@ -31,7 +31,10 @@ end
 
 server = TCPServer.new("0.0.0.0", 1973)
 
-first_time_packet = PacketBuilder.new.build(Packets::FirstTime.new)
+first_time_packet = PacketBuilder.new.build(Packets::FirstTime.new) 
+
+#test = Models::Test
+#puts test
 
 auth_characters_packet = PacketBuilder.new.build(Packets::AuthCharacters.new)
 puts auth_characters_packet.to_slice.to_unsafe_bytes.hexdump

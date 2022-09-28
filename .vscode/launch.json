@@ -1,0 +1,16 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "crystal: debug current file",
+      "preLaunchTask": "crystal: build current file (debug)",
+      "program": "${workspaceFolder}/bin/avocado",
+      "cwd": "${workspaceFolder}",
+      "initCommands": [
+        "command script import /home/nyarum/crystal_formatters.py"
+      ]
+    }
+  ]
+}

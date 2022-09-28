@@ -1,0 +1,23 @@
+name: avocado
+version: 0.2.0
+
+targets:
+  avocado:
+    main: src/main.cr
+
+# authors:
+#   - name <email@example.com>
+
+# description: |
+#   Short description of avocado
+
+# dependencies:
+#   pg:
+#     github: will/crystal-pg
+#     version: "~> 0.5"
+
+# development_dependencies:
+#   webmock:
+#     github: manastech/webmock.cr
+
+# license: MIT

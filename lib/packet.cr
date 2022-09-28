@@ -1,6 +1,6 @@
 require "models"
 require "socket"
-require "avocado"
+require "./avocado"
 
 abstract class PacketOut
   abstract def opcode
@@ -34,9 +34,9 @@ module Packets
     end
 
     def result
-      @data.time = Time.utc.to_s("[%m-%d %H:%M:%S:%L]")
-      @data.pack_time
-      @data.@io.to_s
+      io = IO::Memory.new(2094)
+      @data.pack(io)
+      io.to_s
     end
   end
 
@@ -64,14 +64,14 @@ module Packets
     end
 
     def result
-      @data.pack_error_code
-      @data.pack_key
-      @data.pack_characters
-      @data.pack_pincode
-      @data.pack_encryption
-      @data.pack_dw_flag
+      io = IO::Memory.new(1024)
+      
+      char = Models::Character.new
+      char.name = "Nyarum"
 
-      @data.@io.to_s
+      @data.characters = [char]
+      @data.pack(io)
+      io.to_s
     end
   end
 
