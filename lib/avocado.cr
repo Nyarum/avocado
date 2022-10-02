@@ -31,7 +31,9 @@ module Avocado
 
     include Avocado
 
-    def pack(io, type)
+    @field_options = {} of String => NamedTuple(name: String, value: Bool)
+
+    def pack(io, type, variable)
       case v = type
       when UInt8, UInt16, UInt32, UInt64
         io.write_bytes(v, IO::ByteFormat::BigEndian)
@@ -41,29 +43,55 @@ module Avocado
       when String
         io.write_bytes(v.size.to_i16, IO::ByteFormat::BigEndian)
         io << v
+      when Bool
+        if v
+          io.write_bytes(1_u8, IO::ByteFormat::BigEndian)
+        else
+          io.write_bytes(0_u8, IO::ByteFormat::BigEndian)
+        end
       when Array
+        if !@field_options[variable]?.nil? 
+          field_value = @field_options[variable]
+
+          case field_value[:name] 
+          when "len"
+            pack(io, v.size.to_u8, variable) unless !field_value[:value]
+          end
+        end
+        
         v.each do |x|
           if x.is_a?(Struct)
             x.pack(io)
           else
-            pack(io, x)
+            pack(io, x, variable)
           end
         end
       end
     end
 
     def pack(io)
+      {% for ivar in @type.instance_vars %}
+        {% if !ivar.annotation(AvocadoItem).nil? %}
+          {% if ivar.annotation(AvocadoItem)[:len] != nil %}
+            @field_options[{{ ivar.name.stringify }}] = {
+              name: "len",
+              value: {{ ivar.annotation(AvocadoItem)[:len] }},
+            }
+          {% end %}
+        {% end %}
+      {% end %}
+
       {{ @type.methods.map(&.name).select { |m| !m.includes?("=") }.map(&.stringify) }}.each { |x|
         if x == "initialize"
           next
         end
 
-        pack(io, self[":" + x])
+        pack(io, self[":" + x], x)
       }
     end
 
     def opcode
-      {{ @type.annotation(AvocadoModel)[:opcode] }}
+      {{ @type.annotation(AvocadoModel)[:opcode] }}.to_u16
     end
   
   end

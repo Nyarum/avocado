@@ -9,6 +9,8 @@ def handle_client(client)
   packet_parser = PacketParser.new
   slice = Bytes.new(1024)
   while message = client.read(slice)
+    puts "message len #{message}"
+
     data = slice[..message-1]
 
     puts "Received a new packet"
@@ -22,7 +24,6 @@ def handle_client(client)
     while data = packet_parser.next
       break if data[1] == 0
 
-      puts data[0].to_slice
       client << data[0]
     end
   end
@@ -32,12 +33,6 @@ end
 server = TCPServer.new("0.0.0.0", 1973)
 
 first_time_packet = PacketBuilder.new.build(Packets::FirstTime.new) 
-
-#test = Models::Test
-#puts test
-
-auth_test = Packets::AuthTest.new
-auth_test.parse(Bytes[0x03, 0xa3, 0x03, 0xa3])
 
 puts "Running server"
 while client = server.accept?
@@ -49,3 +44,5 @@ while client = server.accept?
 
   spawn handle_client(client)
 end
+
+

@@ -39,6 +39,7 @@ module Packets
 
     def result
       io = IO::Memory.new(2094)
+      @data.time = Time.utc.to_s("[%m-%d %H:%M:%S:%L]")
       @data.pack(io)
       io.to_s
     end
@@ -72,27 +73,13 @@ module Packets
       
       char = Models::Character.new
       char.name = "Nyarum"
+      char.is_active = 1
 
       @data.characters = [char]
+      @data.pincode = 1
+      
       @data.pack(io)
       io.to_s
-    end
-  end
-
-  class AuthTest < PacketIn
-    @data : Models::CredentialsTest = Models::CredentialsTest.new
-    
-    def opcode
-      @data.opcode
-    end
-
-    def parse(data : Bytes)
-      io = IO::Memory.new(data)
-      @data.unpack(io)
-      self
-    end
-    
-    def self.next()
     end
   end
 
@@ -106,11 +93,16 @@ module Packets
     def parse(data : Bytes)
       io = IO::Memory.new(data)
       @data.unpack(io)
+
+      pp "Credentials data #{@data}"
       self
     end
     
     def next()
       auth_characters_packet = PacketBuilder.new.build(Packets::AuthCharacters.new)
+
+      puts auth_characters_packet.to_slice.to_unsafe_bytes.hexdump
+
       auth_characters_packet
     end
   end
@@ -150,6 +142,8 @@ class PacketParser
 
     id = IO::ByteFormat::LittleEndian.decode(Int32, data[2..5])
     opcode = IO::ByteFormat::BigEndian.decode(UInt16, data[6..7])
+
+    puts "Opcode #{opcode}, id #{id}, len packet #{len_packet}"
 
     @buffer << PacketInputs[opcode].parse(data[8..]).next()
   end
