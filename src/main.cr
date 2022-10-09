@@ -13,7 +13,7 @@ def handle_client(client)
 
     data = slice[..message-1]
 
-    puts "Received a new packet"
+    puts "Received a new packet #{data.size}"
     puts data.to_unsafe_bytes.hexdump
 
     code = packet_parser.parse(data)
@@ -24,6 +24,7 @@ def handle_client(client)
     while data = packet_parser.next
       break if data[1] == 0
 
+      puts "Send #{data[0].size}"
       client << data[0]
     end
   end

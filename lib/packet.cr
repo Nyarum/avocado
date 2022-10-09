@@ -72,13 +72,14 @@ module Packets
       io = IO::Memory.new(1024)
       
       char = Models::Character.new
-      char.name = "Nyarum"
+      char.name = "Nyarum "
       char.is_active = 1
 
       @data.characters = [char]
       @data.pincode = 1
       
       @data.pack(io)
+
       io.to_s
     end
   end
@@ -111,7 +112,7 @@ end
 class PacketBuilder
 
   def build(packet : PacketOut)
-    io = IO::Memory.new(2094)
+    io = IO::Memory.new(8096)
     packet_body = packet.result
 
     len_packet = (packet_body.size + 8).to_i16

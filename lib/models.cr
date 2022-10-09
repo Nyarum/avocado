@@ -28,7 +28,15 @@ module Models
     property value : UInt16 = 0
   end
 
-  struct Item
+  struct ItemAttribute
+    include Avocado::Pack
+
+    property attr : UInt16 = 0
+    property is_init : UInt8 = 0
+  end
+
+  # A2 (162 bytes)
+  struct ItemGrid
     include Avocado::Pack
 
     property id : UInt16 = 0
@@ -36,29 +44,43 @@ module Models
     property endure : Array(UInt16) = Array(UInt16).new(2, 0) # 2
     property energy : Array(UInt16) = Array(UInt16).new(2, 0) # 2
     property forge_lv : UInt8 = 0
-    property pass_value : UInt8 = 0
-    property db_param : Array(UInt16) = Array(UInt16).new(2, 0) # 2
-    property inst_attrs : Array(InstAttribute) = Array(InstAttribute).new(5, InstAttribute.new) # 5
-    property item_attrs : Array(UInt16) = Array(UInt16).new(58, 0) # 58
-    property init_flag : UInt8 = 0
-    property pass_value2 : UInt8 = 0
-    property valid : Bool = false
-    property change : Bool = false
+    property db_param : Array(UInt32) = Array(UInt32).new(2, 0) # 2
+    property inst_attrs : Array(InstAttribute) = Array(InstAttribute).new(5, InstAttribute.new)
+    property item_attrs : Array(ItemAttribute) = Array(ItemAttribute).new(40, ItemAttribute.new)
+    property change : Bool = true
+  end
+
+  @[AvocadoModel(order: Avocado::Order::LittleEndian)]
+  struct Look
+    include Avocado::Pack
+
+    property ver : UInt16 = 0
+    property type_id : UInt16 = 1
+    property item_grids : Array(ItemGrid) = Array(ItemGrid).new(10, ItemGrid.new) # 10
+    property hair : UInt16 = 2062
   end
 
   # LOOK size (from ver:) 2 + 2 + (10 * (2 + 2 + 4 + 4 + 1 + 1 + 4 + (5 * 4) + (58 * 2) + 1 + 1 + 1 + 1)) + 2 = 1586
+  # LOOK 2 size: 2 + 2 + 34 * (1 + 2 + 4 + 2 + 2 + 4 + 4 + 1 + 4 + (5 * 4) + (58 * 3) + 1 + 1)
   struct Character
     include Avocado::Pack
 
     property is_active : UInt8 = 0
+
+    @[AvocadoItem(if: "is_active")]
     property name : String = ""
+
+    @[AvocadoItem(if: "is_active")]
     property job : String = ""
+
+    @[AvocadoItem(if: "is_active")]
     property level : UInt16 = 0
+
+    @[AvocadoItem(if: "is_active")]
     property look_size : UInt16 = 1626
-    property ver : UInt16 = 0
-    property type_id : UInt16 = 1
-    property items : Array(Item) = Array(Item).new(10, Item.new) # 10
-    property hair : UInt16 = 0
+
+    @[AvocadoItem(if: "is_active")]
+    property look : Look = Look.new
   end
 
   @[AvocadoModel(opcode: 931)]
