@@ -1,7 +1,8 @@
 require "socket"
-require "packet"
-require "../lib/models"
-require "../lib/avocado"
+require "./packet"
+require "./models"
+require "./avocado"
+require "./database"
 
 def handle_client(client)
   puts "wait new packet"

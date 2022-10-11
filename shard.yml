@@ -5,6 +5,13 @@ targets:
   avocado:
     main: src/main.cr
 
+dependencies:
+  crecto:    
+    github: Crecto/crecto
+  pg:
+    github: will/crystal-pg
+    version: "~> 0.5"
+
 # authors:
 #   - name <email@example.com>
 

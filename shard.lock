@@ -1,0 +1,14 @@
+version: 2.0
+shards:
+  crecto:
+    git: https://github.com/crecto/crecto.git
+    version: 0.12.1
+
+  db:
+    git: https://github.com/crystal-lang/crystal-db.git
+    version: 0.11.0
+
+  pg:
+    git: https://github.com/will/crystal-pg.git
+    version: 0.26.0
+

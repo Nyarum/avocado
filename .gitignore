@@ -1,1 +1,2 @@
-main.go
+lib
+bindings/password/encrypt_password
