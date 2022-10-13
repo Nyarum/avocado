@@ -14,11 +14,22 @@ module DB
 end
 
 module DBModels
-    class User < Crecto::Model
+    class Account < Crecto::Model
         schema "accounts" do
             field :username, String
             field :password, String
             field :last_login, Time
+        end
+
+        has_many :characters, Character, foreign_key: :account_id
+    end
+
+    class Character < Crecto::Model
+        schema "characters" do
+            field :account_id, Int32
+            field :name, String
+            field :job, String
+            field :level, Int32
         end
     end
 end

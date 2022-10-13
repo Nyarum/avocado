@@ -4,6 +4,8 @@ require "./avocado"
 require "./database"
 require "openssl"
 require "./crypto"
+require "pg"
+require "crecto"
 
 abstract class PacketOut
   abstract def opcode
@@ -22,7 +24,7 @@ class PacketIn
     0.to_u16
   end
 
-  def parse(data : Bytes)
+  def parse(context, data : Bytes)
     puts "base implement"
     self
   end
@@ -36,13 +38,16 @@ module Packets
   class FirstTime < PacketOut
     @data = Models::FirstTime.new
 
+    def initialize
+      @data.time = Time.utc.to_s("[%m-%d %H:%M:%S:%L]")
+    end
+
     def opcode
       @data.opcode
     end
 
     def result
       io = IO::Memory.new(2094)
-      @data.time = Time.utc.to_s("[%m-%d %H:%M:%S:%L]")
       @data.pack(io)
       io.to_s
     end
@@ -66,19 +71,30 @@ module Packets
 
   class AuthCharacters < PacketOut
     @data = Models::Auth.new
+    @characters : Array(DBModels::Character)?
 
+    def initialize(@characters)
+    end
+  
     def opcode
       @data.opcode
     end
 
     def result
-      io = IO::Memory.new(1024)
-      
-      char = Models::Character.new
-      char.name = "Nyarum "
-      char.is_active = 1
+      io = IO::Memory.new(2042)
 
-      @data.characters = [char]
+      if characters = @characters
+        characters.each do |char|
+          new_char = Models::Character.new
+          new_char.name = char.name!
+          new_char.job = char.job!
+          new_char.level = char.level!.to_u16
+          new_char.is_active = 1
+
+          @data.characters << new_char
+        end
+      end
+
       @data.pincode = 1
       
       @data.pack(io)
@@ -89,40 +105,59 @@ module Packets
 
   class Auth < PacketIn
     @data : Models::Credentials = Models::Credentials.new
-    
+    @characters : Array(DBModels::Character)? = Array(DBModels::Character).new
+
     def opcode
       @data.opcode
     end
 
-    def parse(data : Bytes)
+    def parse(context, data : Bytes)
       io = IO::Memory.new(data)
       @data.unpack(io)
 
-      user = DB.get_by(DBModels::User, username: "fred")
+      puts "Username #{@data.login}"
 
-      key = ""
+      user = DB.get_by(DBModels::Account, Crecto::Repo::Query.where(username: @data.login).preload(:characters))
 
       case user
-      when DBModels::User
+      when DBModels::Account
         password = user.password!
+        
+        @characters = user.characters?
 
-        hash = OpenSSL::Digest.new("MD5")
-        hash.update(password)
-        key = hash.hexfinal
+        encrypted_password = encrypt_password(password, context[:date])
       end
-
-      puts encrypt_password(key, "[10-11 13:38:42:078]")
 
       pp "Credentials data #{@data}"
       self
     end
     
-    def next()
-      auth_characters_packet = PacketBuilder.new.build(Packets::AuthCharacters.new)
+    def next
+      auth_characters_packet = PacketBuilder.new.build(Packets::AuthCharacters.new(@characters))
 
       puts auth_characters_packet.to_slice.to_unsafe_bytes.hexdump
 
       auth_characters_packet
+    end
+  end
+
+  class CreateCharacter < PacketIn
+    @data : Models::CreateCharacter = Models::CreateCharacter.new
+
+    def opcode
+      @data.opcode
+    end
+
+    def parse(context, data : Bytes)
+      io = IO::Memory.new(data)
+      @data.unpack(io)
+
+      pp "Create character data #{@data}"
+      self
+    end
+    
+    def next
+      ""
     end
   end
 end
@@ -147,13 +182,19 @@ class PacketBuilder
 end
 
 class PacketParser
-  buffer : Array(String)
+  @buffer : Array(String)
+  @packet_inputs : Hash(UInt16, PacketIn)
 
-  def initialize()
+  def initialize
     @buffer = Array(String).new
+    @packet_inputs = {} of UInt16 => PacketIn
+
+    PacketInputs.each do |k, v|
+      @packet_inputs[k] = v
+    end
   end
 
-  def parse(data : Bytes)
+  def parse(context, data : Bytes)
     len_packet = IO::ByteFormat::BigEndian.decode(Int16, data[..1])
     if len_packet == 2
       return 1
@@ -164,7 +205,7 @@ class PacketParser
 
     puts "Opcode #{opcode}, id #{id}, len packet #{len_packet}"
 
-    @buffer << PacketInputs[opcode].parse(data[8..]).next()
+    @buffer << @packet_inputs[opcode].parse(context, data[8..]).next()
   end
 
   def next()

@@ -4,11 +4,12 @@ require "./models"
 require "./avocado"
 require "./database"
 
-def handle_client(client)
+def handle_client(context, client)
   puts "wait new packet"
 
   packet_parser = PacketParser.new
-  slice = Bytes.new(1024)
+  slice = Bytes.new(10198)
+
   while message = client.read(slice)
     puts "message len #{message}"
 
@@ -17,7 +18,7 @@ def handle_client(client)
     puts "Received a new packet #{data.size}"
     puts data.to_unsafe_bytes.hexdump
 
-    code = packet_parser.parse(data)
+    code = packet_parser.parse(context, data)
     if code == 1
       client << Packets::Ping.new.result
     end
@@ -34,17 +35,19 @@ end
 
 server = TCPServer.new("0.0.0.0", 1973)
 
-first_time_packet = PacketBuilder.new.build(Packets::FirstTime.new) 
-
 puts "Running server"
 while client = server.accept?
-  puts first_time_packet.to_slice.to_unsafe_bytes.hexdump
-  client << first_time_packet
+  first_time_packet = Packets::FirstTime.new
+  context = { date: first_time_packet.@data.time }
+
+  puts context
+
+  client << PacketBuilder.new.build(first_time_packet)
 
   puts "Client connected"
   puts client.remote_address
 
-  spawn handle_client(client)
+  spawn handle_client(context, client)
 end
 
 

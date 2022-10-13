@@ -15,14 +15,15 @@ module Models
 
     property key : String = ""
     property login : String = ""
-    property password : Bytes = Bytes.new(0)
+    property password : String = ""
     property mac : String = ""
-    property is_cheat : Int16 = 0
-    property client_version : Int16 = 0
+    property is_cheat : UInt16 = 0
+    property client_version : UInt16 = 0
   end
 
   struct InstAttribute
     include Avocado::Pack
+    include Avocado::Unpack
 
     property id : UInt16 = 0
     property value : UInt16 = 0
@@ -30,6 +31,7 @@ module Models
 
   struct ItemAttribute
     include Avocado::Pack
+    include Avocado::Unpack
 
     property attr : UInt16 = 0
     property is_init : UInt8 = 0
@@ -38,6 +40,7 @@ module Models
   # A2 (162 bytes)
   struct ItemGrid
     include Avocado::Pack
+    include Avocado::Unpack
 
     property id : UInt16 = 0
     property num : UInt16 = 0
@@ -53,6 +56,7 @@ module Models
   @[AvocadoModel(order: Avocado::Order::LittleEndian)]
   struct Look
     include Avocado::Pack
+    include Avocado::Unpack
 
     property ver : UInt16 = 0
     property type_id : UInt16 = 1
@@ -95,5 +99,15 @@ module Models
     property pincode : UInt8 = 0
     property encryption : UInt32 = 0
     property dw_flag : UInt32 = 12820
+  end
+
+  @[AvocadoModel(opcode: 435)]
+  struct CreateCharacter
+    include Avocado::Unpack
+
+    property name : String = ""
+    property map : String = ""
+    property look_size : UInt16 = 0
+    property look : Look = Look.new
   end
 end

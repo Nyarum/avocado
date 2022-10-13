@@ -3,9 +3,12 @@ package main
 import (
 	"crypto/cipher"
 	"crypto/des"
+	"crypto/md5"
+	"encoding/hex"
 	"flag"
 	"fmt"
 	"os"
+	"strings"
 )
 
 type ecb struct {
@@ -65,7 +68,7 @@ func EncryptPassword(key, str string) (string, error) {
 }
 
 func main() {
-	key := flag.String("key", "", "key for triple des ecb")
+	key := flag.String("password", "", "password in clear view")
 	value := flag.String("value", "", "value for triple des ecb")
 	flag.Parse()
 
@@ -74,7 +77,10 @@ func main() {
 		return
 	}
 
-	result, err := EncryptPassword(string([]byte(*key)[:24]), *value)
+	md5Init := md5.Sum([]byte(*key))
+	passMd5 := hex.EncodeToString(md5Init[:])
+
+	result, err := EncryptPassword(strings.ToUpper(passMd5[:24]), *value)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "%s", err.Error())
 		return

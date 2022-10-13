@@ -63,6 +63,7 @@ module Avocado
         io.write_bytes(v.size.to_i16, order)
         io << String.new(v)
       when String
+        v = v + " "
         io.write_bytes(v.size.to_i16, order)
         io << v
       when Bool
@@ -131,28 +132,39 @@ module Avocado
     
     include Avocado
 
-    def unpack(io, type, variable)
+    def unpack(io, type, variable, order)
+      {% if !@type.annotation(AvocadoModel).nil? %}
+        case {{ @type.annotation(AvocadoModel)[:order] }}
+        when Avocado::Order::LittleEndian
+          order = IO::ByteFormat::LittleEndian
+        else
+          order = IO::ByteFormat::BigEndian
+        end
+      {% end %}
+
       case v = type
       when UInt8
         buf = Bytes.new(1)
         io.read(buf)
-        self[":" + variable] = IO::ByteFormat::BigEndian.decode(typeof(v), buf)
+        self[":" + variable] = order.decode(typeof(v), buf)
       when UInt16
         buf = Bytes.new(2)
         io.read(buf)
-        self[":" + variable] = IO::ByteFormat::BigEndian.decode(typeof(v), buf)
+
+        pp! typeof(v)
+        self[":" + variable] = order.decode(typeof(v), buf)
       when UInt32
         buf = Bytes.new(4)
         io.read(buf)
-        self[":" + variable] = IO::ByteFormat::BigEndian.decode(typeof(v), buf)
+        self[":" + variable] = order.decode(typeof(v), buf)
       when UInt64
         buf = Bytes.new(8)
         io.read(buf)
-        self[":" + variable] = IO::ByteFormat::BigEndian.decode(typeof(v), buf)
+        self[":" + variable] = order.decode(typeof(v), buf)
       when Bytes
         buf = Bytes.new(2)
         io.read(buf)
-        len = IO::ByteFormat::BigEndian.decode(UInt16, buf)
+        len = order.decode(UInt16, buf)
 
         buf = Bytes.new(len)
         io.read(buf)
@@ -160,17 +172,19 @@ module Avocado
       when String
         buf = Bytes.new(2)
         io.read(buf)
-        len = IO::ByteFormat::BigEndian.decode(UInt16, buf)
+        len = order.decode(UInt16, buf)
 
         buf = Bytes.new(len)
         io.read(buf)
-        self[":" + variable] = String.new(buf)
+        self[":" + variable] = String.new(buf[0, len-1])
+      when Struct
+        v.unpack(io)
       when Array
         v.each do |x|
           if x.is_a?(Struct)
-            x.pack(io)
+            x.unpack(io)
           else
-            pack(io, x, variable)
+            unpack(io, x, variable, order)
           end
         end
       end
@@ -182,7 +196,7 @@ module Avocado
           next
         end
 
-        unpack(io, self[":" + x], x)
+        unpack(io, self[":" + x], x, IO::ByteFormat::BigEndian)
       }
     end
 
