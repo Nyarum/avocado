@@ -1,3 +1,4 @@
+# DEPRECATED
 
 annotation AvocadoModel
 end
@@ -132,7 +133,7 @@ module Avocado
     
     include Avocado
 
-    def unpack(io, type, variable, order)
+    def unpack(io, type, variable, order, is_array = false)
       {% if !@type.annotation(AvocadoModel).nil? %}
         case {{ @type.annotation(AvocadoModel)[:order] }}
         when Avocado::Order::LittleEndian
@@ -146,21 +147,43 @@ module Avocado
       when UInt8
         buf = Bytes.new(1)
         io.read(buf)
-        self[":" + variable] = order.decode(typeof(v), buf)
+        
+        v = order.decode(typeof(v), buf)
+        if !is_array 
+          self[":" + variable] = v
+        else
+          v
+        end
       when UInt16
         buf = Bytes.new(2)
         io.read(buf)
 
-        pp! typeof(v)
-        self[":" + variable] = order.decode(typeof(v), buf)
+        v = order.decode(typeof(v), buf)
+        if !is_array 
+          self[":" + variable] = v
+        else
+          v
+        end
       when UInt32
         buf = Bytes.new(4)
         io.read(buf)
-        self[":" + variable] = order.decode(typeof(v), buf)
+
+        v = order.decode(typeof(v), buf)
+        if !is_array 
+          self[":" + variable] = v
+        else
+          v
+        end
       when UInt64
         buf = Bytes.new(8)
         io.read(buf)
-        self[":" + variable] = order.decode(typeof(v), buf)
+        
+        v = order.decode(typeof(v), buf)
+        if !is_array 
+          self[":" + variable] = v
+        else
+          v
+        end
       when Bytes
         buf = Bytes.new(2)
         io.read(buf)
@@ -168,7 +191,12 @@ module Avocado
 
         buf = Bytes.new(len)
         io.read(buf)
-        self[":" + variable] = buf
+
+        if !is_array 
+          self[":" + variable] = buf
+        else
+          buf
+        end
       when String
         buf = Bytes.new(2)
         io.read(buf)
@@ -176,17 +204,43 @@ module Avocado
 
         buf = Bytes.new(len)
         io.read(buf)
-        self[":" + variable] = String.new(buf[0, len-1])
+
+        res = String.new(buf[0, len-1])
+        if !is_array 
+          self[":" + variable] = res
+        else
+          res
+        end
       when Struct
         v.unpack(io)
+        v
       when Array
-        v.each do |x|
-          if x.is_a?(Struct)
-            x.unpack(io)
-          else
-            unpack(io, x, variable, order)
+        key = 0
+        puts ":" + variable
+        size_of_array = v.size
+
+        while key < size_of_array
+          case value_in_array = v[key]
+          when Struct
+            value_in_array.unpack(io)
+          when UInt16
+            puts typeof(value_in_array)
+            puts key
+            tt = self[":" + variable].as(Array(UInt16))
+            vvv = unpack(io, value_in_array, variable, order, is_array = true).as(typeof(value_in_array))
+
+            puts "value #{vvv}"
+            tt[key] = vvv
+
+            puts "test"
+            puts tt[key]
+            puts self[":" + variable]
           end
+
+          key += 1
         end
+
+        puts self[":" + variable]
       end
     end
 

@@ -4,6 +4,8 @@ version: 0.2.0
 targets:
   avocado:
     main: src/main.cr
+  avocado2:
+    main: src/avocado_2.cr
 
 dependencies:
   crecto:    

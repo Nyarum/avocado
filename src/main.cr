@@ -17,6 +17,7 @@ def handle_client(context, client)
 
     puts "Received a new packet #{data.size}"
     puts data.to_unsafe_bytes.hexdump
+    puts data
 
     code = packet_parser.parse(context, data)
     if code == 1
