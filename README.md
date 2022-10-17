@@ -1,5 +1,5 @@
-# AVOCADO
-## Emulator of server-side for Tales of Pirates MMORPG game - ✍️ + 🙏= 🥑
+# AVOCADO ✍️ + 🙏= 🥑
+## Emulator of server-side for Tales of Pirates MMORPG game
 
 Changelog comming soon...
 
