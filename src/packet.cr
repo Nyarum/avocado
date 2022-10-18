@@ -1,6 +1,6 @@
 require "./models"
 require "socket"
-require "./avocado"
+require "./avocado_2"
 require "./database"
 require "openssl"
 require "./crypto"
@@ -73,7 +73,7 @@ module Packets
     @data = Models::Auth.new
     @characters : Array(DBModels::Character)?
 
-    def initialize(@characters)
+    def initialize(@characters, @is_pincode : Bool)
     end
   
     def opcode
@@ -81,7 +81,7 @@ module Packets
     end
 
     def result
-      io = IO::Memory.new(2042)
+      io = IO::Memory.new(10984)
 
       if characters = @characters
         characters.each do |char|
@@ -90,12 +90,13 @@ module Packets
           new_char.job = char.job!
           new_char.level = char.level!.to_u16
           new_char.is_active = 1
+          new_char.look = Models::Look.from_json char.look!.to_s
 
           @data.characters << new_char
         end
       end
 
-      @data.pincode = 1
+      @data.pincode = @is_pincode ? 1.to_u8 : 0.to_u8
       
       @data.pack(io)
 
@@ -106,6 +107,7 @@ module Packets
   class Auth < PacketIn
     @data : Models::Credentials = Models::Credentials.new
     @characters : Array(DBModels::Character)? = Array(DBModels::Character).new
+    @is_pincode : Bool = false
 
     def opcode
       @data.opcode
@@ -117,7 +119,7 @@ module Packets
 
       puts "Username #{@data.login}"
 
-      user = DB.get_by(DBModels::Account, Crecto::Repo::Query.where(username: @data.login).preload(:characters))
+      user = DB.get_by!(DBModels::Account, Crecto::Repo::Query.where(username: @data.login).preload(:characters))
 
       case user
       when DBModels::Account
@@ -126,6 +128,10 @@ module Packets
         @characters = user.characters?
 
         encrypted_password = encrypt_password(password, context[:date])
+
+        context[:user_data]["user_id"] = user.id.as(Int32)
+
+        @is_pincode = !user.pincode.nil?
       end
 
       pp "Credentials data #{@data}"
@@ -133,11 +139,29 @@ module Packets
     end
     
     def next
-      auth_characters_packet = PacketBuilder.new.build(Packets::AuthCharacters.new(@characters))
+      auth_characters_packet = PacketBuilder.new.build(Packets::AuthCharacters.new(@characters, @is_pincode))
 
       puts auth_characters_packet.to_slice.to_unsafe_bytes.hexdump
 
       auth_characters_packet
+    end
+  end
+
+  class CreateCharacterReply < PacketOut
+    @data = Models::CreateCharacterReply.new
+
+    def initialize
+      
+    end
+
+    def opcode
+      @data.opcode
+    end
+
+    def result
+      io = IO::Memory.new(2094)
+      @data.pack(io)
+      io.to_s
     end
   end
 
@@ -152,12 +176,183 @@ module Packets
       io = IO::Memory.new(data)
       @data.unpack(io)
 
+      new_character = DBModels::Character.new
+      new_character.account_id = context[:user_data]["user_id"]
+      new_character.name = @data.name
+      new_character.job = "Newbie"
+      new_character.level = 1
+      new_character.look = @data.look.to_json
+
+      changeset = DB.insert(new_character)
+
+      puts "Results of push to database #{changeset}"
+
       pp "Create character data #{@data}"
       self
     end
     
     def next
-      ""
+      reply = PacketBuilder.new.build(Packets::CreateCharacterReply.new)
+
+      puts reply.to_slice.to_unsafe_bytes.hexdump
+
+      reply
+    end
+  end
+
+  class CreatePincodeReply < PacketOut
+    @data = Models::CreatePincodeReply.new
+
+    def initialize
+      
+    end
+
+    def opcode
+      @data.opcode
+    end
+
+    def result
+      io = IO::Memory.new(2094)
+      @data.pack(io)
+      io.to_s
+    end
+  end
+
+  class CreatePincode < PacketIn
+    @data : Models::CreatePincode = Models::CreatePincode.new
+
+    def opcode
+      @data.opcode
+    end
+
+    def parse(context, data : Bytes)
+      io = IO::Memory.new(data)
+      @data.unpack(io)
+
+      account = DB.get!(DBModels::Account, context[:user_data]["user_id"])
+      account.pincode = @data.pincode
+      changeset = DB.update(account)
+
+      pp "Create pincode data #{@data}"
+      self
+    end
+    
+    def next
+      reply = PacketBuilder.new.build(Packets::CreatePincodeReply.new)
+
+      puts reply.to_slice.to_unsafe_bytes.hexdump
+
+      reply
+    end
+  end
+
+  class ChangePincodeReply < PacketOut
+    @data = Models::ChangePincodeReply.new
+
+    def initialize
+      
+    end
+
+    def opcode
+      @data.opcode
+    end
+
+    def result
+      io = IO::Memory.new(2094)
+      @data.pack(io)
+      io.to_s
+    end
+  end
+
+  class ChangePincode < PacketIn
+    @data : Models::ChangePincode = Models::ChangePincode.new
+
+    def opcode
+      @data.opcode
+    end
+
+    def parse(context, data : Bytes)
+      io = IO::Memory.new(data)
+      @data.unpack(io)
+
+      pp "Change pincode data #{@data}"
+      self
+    end
+    
+    def next
+      reply = PacketBuilder.new.build(Packets::ChangePincodeReply.new)
+
+      puts reply.to_slice.to_unsafe_bytes.hexdump
+
+      reply
+    end
+  end
+
+  class DeleteCharacterReply < PacketOut
+    @data = Models::DeleteCharacterReply.new
+
+    def initialize
+      
+    end
+
+    def opcode
+      @data.opcode
+    end
+
+    def result
+      io = IO::Memory.new(2094)
+      @data.pack(io)
+      io.to_s
+    end
+  end
+
+  class DeleteCharacter < PacketIn
+    @data : Models::DeleteCharacter = Models::DeleteCharacter.new
+
+    def opcode
+      @data.opcode
+    end
+
+    def parse(context, data : Bytes)
+      io = IO::Memory.new(data)
+      @data.unpack(io)
+
+      query = Crecto::Repo::Query.where(name: @data.name)
+      changeset = DB.delete_all(DBModels::Character, query)
+
+      pp "Results of deleting in database #{changeset}"
+
+      pp "Delete character data #{@data}"
+      self
+    end
+    
+    def next
+      reply = PacketBuilder.new.build(Packets::DeleteCharacterReply.new)
+
+      puts reply.to_slice.to_unsafe_bytes.hexdump
+
+      reply
+    end
+  end
+
+  class ExitAccount < PacketIn
+    @data : Models::ExitAccount = Models::ExitAccount.new
+
+    def opcode
+      @data.opcode
+    end
+
+    def parse(context, data : Bytes)
+      io = IO::Memory.new(data)
+      @data.unpack(io)
+
+      pp "Exit account #{@data}"
+      context[:client].close
+      self
+    end
+    
+    def next
+      
     end
   end
 end
@@ -205,7 +400,10 @@ class PacketParser
 
     puts "Opcode #{opcode}, id #{id}, len packet #{len_packet}"
 
-    @buffer << @packet_inputs[opcode].parse(context, data[8..]).next()
+    next_packet = @packet_inputs[opcode].parse(context, data[8..]).next()
+    if !next_packet.nil?
+      @buffer << next_packet
+    end
   end
 
   def next()

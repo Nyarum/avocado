@@ -1,5 +1,4 @@
 
-create_character_packet = Bytes[0, 7, 97, 115, 100, 97, 115, 100, 0, 0, 12, 65, 114, 103, 101, 110, 116, 32, 67, 105, 116, 121, 0, 6, 90, 12, 12, 4, 12, 12, 14, 14, 14, 14, 14, 14, 14, 14, 14, 12, 12, 19, 19, 19, 19, 19, 12, 12, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 250, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 32, 3, 6, 0, 0, 0, 0, 0, 32, 3, 6, 2, 0, 0, 0, 41, 0, 0, 0, 0, 0, 0, 0, 64, 236, 48, 34, 88, 2, 0, 0, 0, 0, 0, 0, 32, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 0, 0, 0, 0, 0, 0, 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 243, 8]
 
 annotation AvocadoModel
 end
@@ -8,7 +7,15 @@ annotation AvocadoItem
 end
 
 struct Bool
-    def parse(io, order)
+    def pack(io, order)
+        if self
+            io.write_bytes(1_u8, order)
+        else
+            io.write_bytes(0_u8, order)
+        end
+    end
+
+    def unpack(io, order)
         buf = Bytes.new(1)
         io.read(buf)
         
@@ -18,7 +25,11 @@ struct Bool
 end
 
 struct UInt8
-    def parse(io, order)
+    def pack(io, order)
+        io.write_bytes(self, order)
+    end
+
+    def unpack(io, order)
         buf = Bytes.new(1)
         io.read(buf)
     
@@ -27,18 +38,24 @@ struct UInt8
 end
 
 struct UInt16
-    def parse(io, order)
+    def pack(io, order)
+        io.write_bytes(self, order)
+    end
+
+    def unpack(io, order)
         buf = Bytes.new(2)
         io.read(buf)
-
-        puts buf
 
         order.decode(UInt16, buf)
     end
 end
 
 struct UInt32
-    def parse(io, order)
+    def pack(io, order)
+        io.write_bytes(self, order)
+    end
+
+    def unpack(io, order)
         buf = Bytes.new(4)
         io.read(buf)
     
@@ -46,8 +63,34 @@ struct UInt32
     end
 end
 
+struct Slice
+    def pack(io, order)
+        v = self
+        io.write_bytes(v.size.to_i16, order)
+        io << String.new(v)
+    end
+
+    def unpack(io, order)
+        buf = Bytes.new(2)
+        io.read(buf)
+
+        len = order.decode(UInt16, buf)
+
+        buf = Bytes.new(len)
+        io.read(buf)
+
+        buf
+    end
+end
+
 class String
-    def parse(io, order)
+    def pack(io, order)
+        v = self + " "
+        io.write_bytes(v.size.to_i16, order)
+        io << v
+    end
+
+    def unpack(io, order)
         buf = Bytes.new(2)
         io.read(buf)
 
@@ -60,106 +103,104 @@ class String
     end
 end
 
-module Avocado2
+module Avocado
+
+    def opcode
+        {{ @type.annotation(AvocadoModel)[:opcode] }}.to_u16
+    end
+
+    module Pack
+
+        include Avocado
+
+        @field_options = {} of String => NamedTuple(name: String, value: Bool | String)
+
+        def pack(io, order = IO::ByteFormat::BigEndian)
+            {% for ivar in @type.instance_vars %}
+                {% if !ivar.annotation(AvocadoItem).nil? %}
+                    {% if ivar.annotation(AvocadoItem)[:len] != nil %}
+                        @field_options[{{ ivar.name.stringify }}] = {
+                            name: "len",
+                            value: {{ ivar.annotation(AvocadoItem)[:len] }},
+                        }
+                    {% end %}
+
+                    {% if ivar.annotation(AvocadoItem)[:if] != nil %}
+                        @field_options[{{ ivar.name.stringify }}] = {
+                            name: "if",
+                            value: {{ ivar.annotation(AvocadoItem)[:if] }},
+                        }
+                    {% end %}
+                {% end %}
+            {% end %}
+
+            {% if !@type.annotation(AvocadoModel).nil? %}
+                order = {{ @type.annotation(AvocadoModel)[:order] }}
+            {% end %}
+            
+            if order.nil?
+                order = IO::ByteFormat::BigEndian
+            end
+
+            {% for ivar in @type.instance_vars %}
+                {% if ivar.stringify != "field_options" %}
+                    case struct_field = @{{ ivar }}
+                    when Struct
+                        struct_field.pack(io, order)
+                    when Array
+                        if !@field_options[{{ ivar.name.stringify }}]?.nil? 
+                            puts "test"
+                            field_value = @field_options[{{ ivar.name.stringify }}]
+                
+                            case field_value[:name] 
+                            when "len"
+                                size = UInt8.new(struct_field.size)
+                                size.pack(io, order) unless !field_value[:value]
+                            end
+                        end
+
+                        struct_field.each_with_index do |array_field, index|
+                            array_field.pack(io, order)
+                        end
+                    else 
+                        struct_field.pack(io, order)
+                    end
+                {% end %}
+            {% end %}
+            self
+        end   
+
+    end
 
     module Unpack
 
-        include Avocado2
+        include Avocado
 
-        def parse(io, order = IO::ByteFormat::BigEndian)
+        def unpack(io, order = IO::ByteFormat::BigEndian)
             {% if !@type.annotation(AvocadoModel).nil? %}
                 order = {{ @type.annotation(AvocadoModel)[:order] }}
             {% end %}
 
+            if order.nil?
+                order = IO::ByteFormat::BigEndian
+            end
+
             {% for ivar in @type.instance_vars %}
-                case struct_field = @{{ ivar }}
-                when Struct
-                    @{{ ivar }} = struct_field.parse(io, order)
-                when Array
-                    struct_field.each_with_index do |array_field, index|
-                        struct_field[index] = array_field.parse(io, order)
+                {% if ivar.stringify != "field_options" %}
+                    case struct_field = @{{ ivar }}
+                    when Struct
+                        @{{ ivar }} = struct_field.unpack(io, order)
+                    when Array
+                        struct_field.each_with_index do |array_field, index|
+                            struct_field[index] = array_field.unpack(io, order)
+                        end
+                    else 
+                        @{{ ivar }} = struct_field.unpack(io, order)
                     end
-                else 
-                    @{{ ivar }} = struct_field.parse(io, order)
-                end
+                {% end %}
             {% end %}
             self
         end   
 
     end
 end
-
-struct InstAttribute
-    include Avocado2::Unpack
-
-    property id : UInt16 = 0
-    property value : UInt16 = 0
-end
-
-struct ItemAttribute
-    include Avocado2::Unpack
-
-    property attr : UInt16 = 0
-    property is_init : UInt8 = 0
-end
-
-# A2 (162 bytes)
-struct ItemGrid
-    include Avocado2::Unpack
-
-    property id : UInt16 = 0
-    property num : UInt16 = 0
-    property endure : Array(UInt16) = Array(UInt16).new(2, 0) # 2
-    property energy : Array(UInt16) = Array(UInt16).new(2, 0) # 2
-    property forge_lv : UInt8 = 0
-    property db_param : Array(UInt32) = Array(UInt32).new(2, 0) # 2
-    property inst_attrs : Array(InstAttribute) = Array(InstAttribute).new(5) #5
-    property item_attrs : Array(ItemAttribute) = Array(ItemAttribute).new(40) #40
-    property change : Bool = true
-
-    def initialize
-        (1..5).each do |x|
-            @inst_attrs << InstAttribute.new
-        end
-
-        (1..40).each do |x|
-            @item_attrs << ItemAttribute.new
-        end
-    end
-end
-
-@[AvocadoModel(order: IO::ByteFormat::LittleEndian)]
-struct Look
-    include Avocado2::Unpack
-
-    property ver : UInt16 = 0
-    property type_id : UInt16 = 1
-    property item_grids : Array(ItemGrid) = Array(ItemGrid).new(10) # 10
-    property hair : UInt16 = 0
-
-    def initialize
-        (1..10).each do |x|
-            @item_grids << ItemGrid.new
-        end
-    end
-end
-
-#@[AvocadoModel(opcode: 435)]
-struct CreateCharacter
-    include Avocado2::Unpack
-
-    property name : String = ""
-    property map : String = ""
-    property look_size : UInt16 = 0
-    property look : Look = Look.new
-end
-
-io = IO::Memory.new(create_character_packet)
-
-puts io.size
-
-create_character = CreateCharacter.new
-pp! create_character.parse(io)
-
-
-puts "test"

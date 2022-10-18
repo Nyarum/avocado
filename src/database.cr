@@ -19,6 +19,7 @@ module DBModels
             field :username, String
             field :password, String
             field :last_login, Time
+            field :pincode, String
         end
 
         has_many :characters, Character, foreign_key: :account_id
@@ -30,6 +31,7 @@ module DBModels
             field :name, String
             field :job, String
             field :level, Int32
+            field :look, Json
         end
     end
 end

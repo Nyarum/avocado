@@ -1,7 +1,7 @@
 require "socket"
 require "./packet"
 require "./models"
-require "./avocado"
+require "./avocado_2"
 require "./database"
 
 def handle_client(context, client)
@@ -10,14 +10,19 @@ def handle_client(context, client)
   packet_parser = PacketParser.new
   slice = Bytes.new(10198)
 
-  while message = client.read(slice)
+  loop do
+    if client.closed?
+      break
+    end
+
+    message = client.read(slice)
+
     puts "message len #{message}"
 
     data = slice[..message-1]
 
     puts "Received a new packet #{data.size}"
-    puts data.to_unsafe_bytes.hexdump
-    puts data
+    #puts data.to_unsafe_bytes.hexdump
 
     code = packet_parser.parse(context, data)
     if code == 1
@@ -39,7 +44,7 @@ server = TCPServer.new("0.0.0.0", 1973)
 puts "Running server"
 while client = server.accept?
   first_time_packet = Packets::FirstTime.new
-  context = { date: first_time_packet.@data.time }
+  context = { date: first_time_packet.@data.time, client: client, user_data: Hash(String, Int32).new }
 
   puts context
 
