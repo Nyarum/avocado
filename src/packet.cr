@@ -335,6 +335,48 @@ module Packets
     end
   end
 
+  class EnterGameReply < PacketOut
+    @data = Models::EnterGameReply.new
+
+    def initialize
+      
+    end
+
+    def opcode
+      @data.opcode
+    end
+
+    def result
+      io = IO::Memory.new(10986)
+      @data.pack(io)
+      io.to_s
+    end
+  end
+
+  class EnterGame < PacketIn
+    @data : Models::EnterGame = Models::EnterGame.new
+
+    def opcode
+      @data.opcode
+    end
+
+    def parse(context, data : Bytes)
+      io = IO::Memory.new(data)
+      @data.unpack(io)
+
+      pp "Enter game data #{@data}"
+      self
+    end
+    
+    def next
+      reply = PacketBuilder.new.build(Packets::EnterGameReply.new)
+
+      puts reply.to_slice.to_unsafe_bytes.hexdump
+
+      reply
+    end
+  end
+
   class ExitAccount < PacketIn
     @data : Models::ExitAccount = Models::ExitAccount.new
 
