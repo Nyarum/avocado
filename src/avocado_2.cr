@@ -1,4 +1,5 @@
 
+require "./enums"
 
 annotation AvocadoModel
 end
@@ -66,7 +67,6 @@ end
 struct Slice
     def pack(io, order)
         v = self
-        io.write_bytes(v.size.to_i16, order)
         io << String.new(v)
     end
 
@@ -83,9 +83,23 @@ struct Slice
     end
 end
 
+class Array
+    def pack(io, order)
+        self.each do |el|
+            el.pack(io, order)
+        end
+    end
+
+    def unpack(io, order)
+        self.each do |el|
+            el.unpack(io, order)
+        end
+    end
+end
+
 class String
     def pack(io, order)
-        v = self + " "
+        v = self + String.new(Bytes[0x00])
         io.write_bytes(v.size.to_i16, order)
         io << v
     end
@@ -125,6 +139,13 @@ module Avocado
                         }
                     {% end %}
 
+                    {% if ivar.annotation(AvocadoItem)[:guard] != nil %}
+                        @field_options[{{ ivar.name.stringify }}] = {
+                            name: "guard",
+                            value: {{ ivar.annotation(AvocadoItem)[:guard] }},
+                        }
+                    {% end %}
+
                     {% if ivar.annotation(AvocadoItem)[:if] != nil %}
                         @field_options[{{ ivar.name.stringify }}] = {
                             name: "if",
@@ -149,7 +170,6 @@ module Avocado
                         struct_field.pack(io, order)
                     when Array
                         if !@field_options[{{ ivar.name.stringify }}]?.nil? 
-                            puts "test"
                             field_value = @field_options[{{ ivar.name.stringify }}]
                 
                             case field_value[:name] 

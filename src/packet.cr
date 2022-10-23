@@ -369,7 +369,11 @@ module Packets
     end
     
     def next
-      reply = PacketBuilder.new.build(Packets::EnterGameReply.new)
+      res = Packets::EnterGameReply.new
+      res.@data.map_name = "garner"
+      res.@data.character_base.name = "test"
+
+      reply = PacketBuilder.new.build(res)
 
       puts reply.to_slice.to_unsafe_bytes.hexdump
 
